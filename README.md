@@ -10,7 +10,7 @@ MyTasksApp Node.js es un API desarrollada con Node.js, Typescript y Express.js p
 - Firestore Database
 - dotenv
 - Joi
-- @hapi/boom
+- hapi/boom
 - JSON Web Token (JWT)
 - Passport
 
