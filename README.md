@@ -21,7 +21,7 @@ MyTasksApp Node.js es un API desarrollada con Node.js, Typescript y Express.js p
 #### Obtener usuario:
 
 ```bash
-  GET /users/{email}
+  GET /api/users/{email}
 ```
 
 Obtiene un usuario registrado y devuelve un token de acceso.
@@ -29,7 +29,7 @@ Obtiene un usuario registrado y devuelve un token de acceso.
 #### Crear usuario:
 
 ```bash
-  POST /users
+  POST /api/users
 ```
 
 Crea un nuevo usuario y devuelve un token de acceso.
@@ -39,25 +39,25 @@ Todas los endpoints de las tareas están protegidas por JWT.
 
 #### Obtener todas las tareas:
 ```bash
-  GET /tasks
+  GET /api/tasks
 ```
 
 #### Crear tarea:
 
 ```bash
-  POST /tasks
+  POST /api/tasks
 ```
 
 #### Actualizar tarea:
 
 ```bash
-  PUT /tasks/{taskId}
+  PUT /api/tasks/{taskId}
 ```
 
 #### Eliminar tarea:
 
 ```bash
-  DELETE /tasks/{taskId}
+  DELETE /api/tasks/{taskId}
 ```
 
 ## Configuración
@@ -66,18 +66,36 @@ Todas los endpoints de las tareas están protegidas por JWT.
 
 ## Instalación
 
-Clona este repositorio:
+1. Clona este repositorio:
 ```bash
-  git clone https://github.com/JorgeLuisV/myTasksAppNode.git
+git clone https://github.com/JorgeLuisV/myTasksAppNode.git
 ```
-Navega al directorio del proyecto:
+
+2. Navega al directorio functions dentro del proyecto :
 ```bash
-  cd myTasksAppNode
+cd myTasksAppNode/functions
 ```
-Instala las dependencias:
+
+3. Instala las dependencias:
 ```bash
-  npm install
+npm install
 ```
+
+4. Haz una copia del archivo ``.env.example`` y renómbralo a ``.env``, luego ingresa al archivo y asigna un valor a la variable de entorno.
+
+5. Compila el proyecto
+```bash
+npm run build
+```
+6. Regresa a la raiz del proyecto
+```bash
+cd..
+```
+7. Ejecuta el emulador y ve a la URL que te proporciona.
+```bash
+firebase emulators:start --only functions
+```
+
 
 ## Licencia
 
