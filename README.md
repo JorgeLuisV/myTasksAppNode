@@ -79,10 +79,6 @@ Instala las dependencias:
   npm install
 ```
 
-## Uso
-
-Inicia el servidor: `firebase emulators:start`
-
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Para más detalles, consulta el archivo [LICENSE](LICENSE).
