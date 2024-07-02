@@ -1,33 +1,42 @@
-export interface CreateUser {
-    email: string;
-  }
+// User types
+export type CreateUser = {
+  email: string;
+}
 
 export interface User extends CreateUser {
-    id: string;
-  }
+  id: string;
+}
 
-export interface CreateTask {
-    title: string;
-    description?: string;
-    completed: boolean;
-    createdAt: Date;
-    userID: string;
-  }
+export type TokenResponse = {
+  token: string;
+}
 
-export interface UpdateTask {
-    title?: string;
-    description?: string;
-    completed?: boolean;
-  }
+export type UserGetParams = {
+  email: string;
+}
 
-export interface Payload {
-    sub: string;
-    name: string;
-    iat: number;
-    exp: number;
-  }
+// Task types
+export type CreateTask = {
+  title: string;
+  description?: string;
+  completed: boolean;
+  createdAt: Date;
+  userID: string;
+}
 
-  interface FirebaseTimestamp {
-    _seconds: number;
-    _nanoseconds: number;
-  }
+export interface Task extends CreateTask {
+  id: string;
+}
+
+export type UpdateTask = {
+  title?: string;
+  description?: string;
+  completed?: boolean;
+}
+
+export type Payload = {
+  sub: string;
+  email: string;
+  iat: number;
+  exp: number;
+}

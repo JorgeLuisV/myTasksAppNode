@@ -2,26 +2,29 @@ import {db} from "../libs/firestore";
 import jwt, {Secret} from "jsonwebtoken";
 import boom from "@hapi/boom";
 
-import {CreateUser, User} from "../types";
+import {CreateUser, TokenResponse, User} from "../types";
 import {config} from "../config/config";
 
 export class UserService {
-  private collection = "users";
+  private readonly collection = "users";
 
   async findUserByEmail(email: string): Promise<User | null> {
-    const querySnapshot = await db
-      .collection(this.collection)
-      .where("email", "==", email)
-      .get();
+    try {
+      const querySnapshot = await db
+        .collection(this.collection)
+        .where("email", "==", email)
+        .get();
 
-    if (querySnapshot.empty) {
-      return null;
-    } else {
-      const user = {
-        id: querySnapshot.docs[0].id,
-        email: querySnapshot.docs[0].data().email,
-      };
-      return user;
+      if (querySnapshot.empty) {
+        return null;
+      } else {
+        return {
+          id: querySnapshot.docs[0].id,
+          email: querySnapshot.docs[0].data().email,
+        };
+      }
+    } catch (error) {
+      throw new Error(`Error finding user by email: ${(error as Error).message}`);
     }
   }
 
@@ -33,36 +36,46 @@ export class UserService {
     return user;
   }
 
-  signToken(user: User) {
-    const secret = config.jwtSecret;
+  signToken(user: User): TokenResponse {
+    const secret = config.jwtSecret as Secret;
     const jwtConfig = {
       expiresIn: "3d",
     };
     const payload = {
       sub: user.id,
-      name: user.email,
+      email: user.email,
     };
 
-    const token = jwt.sign(payload, secret as Secret, jwtConfig);
+    const token = jwt.sign(payload, secret, jwtConfig);
 
     return {token};
   }
 
   async create(data: CreateUser): Promise<User> {
-    const user = await this.findUserByEmail(data.email);
-    if (user) {
-      throw boom.unauthorized("User already exists");
-    }
+    try {
+      const user = await this.findUserByEmail(data.email);
+        if (user) {
+            throw boom.unauthorized("User already exists");
+        }
 
-    const docRef = await db.collection(this.collection).add(data);
-    const doc = await docRef.get();
-    if (!doc.exists) {
-      throw new Error("the document does not exist");
-    }
+        const newUser = await db.runTransaction(async (transaction) => {
+            const userSnapshot = await transaction.get(db.collection(this.collection).where('email', '==', data.email));
+            if (!userSnapshot.empty) {
+                throw boom.unauthorized("User already exists");
+            }
 
-    return {
-      id: doc.id,
-      email: doc.data()?.email,
-    };
+            const docRef = db.collection(this.collection).doc();
+            transaction.set(docRef, data);
+
+            return {
+                id: docRef.id,
+                email: data.email,
+            };
+        });
+
+        return newUser;
+    } catch (error: any) {
+      throw new Error(`Error creating user: ${(error as Error).message}`);
+    }
   }
 }
