@@ -35,7 +35,7 @@ Obtiene un usuario registrado y devuelve un token de acceso.
 Crea un nuevo usuario y devuelve un token de acceso.
 
 ### Tareas
-Todas los endpoints de las tareas están protegidas por JWT.
+Todos los endpoints de las tareas están protegidas por JWT.
 
 #### Obtener todas las tareas:
 ```bash
