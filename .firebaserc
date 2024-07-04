@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "mytasksapp-3ba53"
-  }
+    "default": "mytasksapp-985d9",
+    "mytasksapp_node": "mytasksapp-985d9"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

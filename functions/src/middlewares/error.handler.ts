@@ -13,8 +13,7 @@ export function logErrors(
 export function errorHandler(
   err: Error,
   _req: Request,
-  res: Response,
-  _next: NextFunction
+  res: Response
 ) {
   res.status(500).json({
     message: err.message,

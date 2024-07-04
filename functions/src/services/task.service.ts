@@ -10,7 +10,6 @@ export class TaskService {
     try {
       const querySnapshot = await db.collection(this.collection)
         .where("userID", "==", userID)
-        .orderBy("createdAt", "desc")
         .get();
 
       const data = querySnapshot.docs.map((doc) => {
@@ -20,8 +19,8 @@ export class TaskService {
           title: docData.title,
           completed: docData.completed,
           createdAt: docData.createdAt,
-          userID: docData.userID
-        }
+          userID: docData.userID,
+        };
 
         if (docData.description !== undefined) {
           task.description = docData.description;
@@ -31,8 +30,10 @@ export class TaskService {
       });
 
       return data;
-    } catch (error: any) {
-      throw new Error(`Error finding task by userID: ${(error as Error).message}`);
+    } catch (error) {
+      throw new Error(
+        `Error finding task by userID: ${(error as Error).message}`
+      );
     }
   }
 
@@ -46,15 +47,15 @@ export class TaskService {
 
       const docData = docSnap.data();
       if (!docData) {
-          throw new Error("Document data not found");
+        throw new Error("Document data not found");
       }
 
       return {
         id: docSnap.id,
-        ...docData as CreateTask
+        ...docData as CreateTask,
       };
-    } catch (error: any) {
-        throw new Error(`Error creating task: ${(error as Error).message}`);
+    } catch (error) {
+      throw new Error(`Error creating task: ${(error as Error).message}`);
     }
   }
 
@@ -106,12 +107,12 @@ export class TaskService {
     // Obtengo la data del documento
     const docData = docSnap.data();
     if (!docData) {
-        throw new Error("Failed to retrieve existing task data");
+      throw new Error("Failed to retrieve existing task data");
     }
 
     const updatedData = {
       ...docData, // Data anterior
-      ...data // Data nueva
+      ...data, // Data nueva
     };
 
     return {

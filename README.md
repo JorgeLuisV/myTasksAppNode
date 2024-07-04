@@ -96,6 +96,7 @@ cd..
 firebase emulators:start --only functions
 ```
 
+firebase use --add
 
 ## Licencia
 

@@ -24,7 +24,9 @@ export class UserService {
         };
       }
     } catch (error) {
-      throw new Error(`Error finding user by email: ${(error as Error).message}`);
+      throw new Error(
+        `Error finding user by email: ${(error as Error).message}`
+      );
     }
   }
 
@@ -52,29 +54,32 @@ export class UserService {
   }
 
   async create(data: CreateUser): Promise<User> {
+    const user = await this.findUserByEmail(data.email);
+    if (user) {
+      throw boom.unauthorized("User already exists");
+    }
+
     try {
-      const user = await this.findUserByEmail(data.email);
-        if (user) {
-            throw boom.unauthorized("User already exists");
+      const newUser = await db.runTransaction(async (transaction) => {
+        const userSnapshot = await transaction
+          .get(db.collection(this.collection)
+            .where("email", "==", data.email));
+
+        if (!userSnapshot.empty) {
+          throw boom.unauthorized("User already exists");
         }
 
-        const newUser = await db.runTransaction(async (transaction) => {
-            const userSnapshot = await transaction.get(db.collection(this.collection).where('email', '==', data.email));
-            if (!userSnapshot.empty) {
-                throw boom.unauthorized("User already exists");
-            }
+        const docRef = db.collection(this.collection).doc();
+        transaction.set(docRef, data);
 
-            const docRef = db.collection(this.collection).doc();
-            transaction.set(docRef, data);
+        return {
+          id: docRef.id,
+          email: data.email,
+        };
+      });
 
-            return {
-                id: docRef.id,
-                email: data.email,
-            };
-        });
-
-        return newUser;
-    } catch (error: any) {
+      return newUser;
+    } catch (error) {
       throw new Error(`Error creating user: ${(error as Error).message}`);
     }
   }
